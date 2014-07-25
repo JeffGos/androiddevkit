@@ -165,6 +165,11 @@ public class Log
         }
     }
 
+	public static String getStackTraceString(Throwable throwable)
+	{
+		return android.util.Log.getStackTraceString(throwable);
+	}
+
 	public void logMessage(int logLevel, String tag, String message, Throwable throwable, Thread thread)
 	{
         if (tag == null && message == null && throwable == null && thread == null)
@@ -179,12 +184,12 @@ public class Log
 
         if (thread != null)
         {
-            message += "\nThread: " + thread.getName() + " - ";
+            message += "\nThread: " + thread.getName();
         }
 
         if (throwable != null)
         {
-            message += "\nException:" + throwable.getMessage() + " - ";
+            message += "\nException:" + android.util.Log.getStackTraceString(throwable);
         }
 
         android.util.Log.println(logLevel, tag, message);

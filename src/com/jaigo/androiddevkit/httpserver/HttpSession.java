@@ -1,9 +1,4 @@
 package com.jaigo.androiddevkit.httpserver;
-// HttpSession
-//
-// Created by jeff.gosling on 08/04/13
-// Copyright (c) 2012 DDN Ltd. All rights reserved.
-//
 
 import com.jaigo.androiddevkit.utils.Log;
 

@@ -3,14 +3,19 @@ package com.jaigo.androiddevkit.utils;
 import com.jaigo.androiddevkit.TimeSpan;
 import com.jaigo.androiddevkit.Urn;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +26,7 @@ public final class ConvertUtils
 		return value.compareToIgnoreCase("true") == 0;
 	}
 
-	public static int [] toIntArray(ArrayList<Integer> integerList)
+	public static int[] toIntArray(ArrayList<Integer> integerList)
 	{
 		Iterator<Integer> iterator = integerList.iterator();
 		int[] result = new int[integerList.size()];
@@ -59,17 +64,17 @@ public final class ConvertUtils
 		return new Short(value);
 	}
 
-	public static int toint(String value)
+	public static int toint(String value) throws Exception
 	{
 		try
 		{
 			return Integer.parseInt(value);
 		}
-		catch (Exception e)
+		catch (NumberFormatException ex)
 		{
+			Log.e("ConvertUtils", "toint(String)", ex);
+			throw ex;
 		}
-
-		return 0;
 	}
 
 	public static Integer toInteger(String value)
@@ -92,8 +97,7 @@ public final class ConvertUtils
 		try
 		{
 			return Float.parseFloat(value);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 		}
 
@@ -135,10 +139,9 @@ public final class ConvertUtils
 			{
 				return UUID.fromString(value);
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
-            Log.e("ConvertUtils.toUUID", "Error converting string to UUID - " + value, e);
+			Log.e("ConvertUtils.toUUID", "Error converting string to UUID - " + value, e);
 		}
 
 		return null;
@@ -154,8 +157,7 @@ public final class ConvertUtils
 		try
 		{
 			retval = dateFormat.parse(value);
-		}
-		catch (Exception ex)
+		} catch (Exception ex)
 		{
 			retval = null;
 		}
@@ -165,26 +167,25 @@ public final class ConvertUtils
 			try
 			{
 				// datetime json string = \/Date(1324492241979+0000)\/
-				
+
 				// The timezone part (+0000) can be ignored for converting to UTC.
 				// The main numeric part represents milliseconds since epoch (1/1/1970 UTC),
 				// the time zone part just informs you of the local timezone on the server
-				
+
 				int idxStart = value.indexOf("/Date(") + 6;
 				int idxEnd = value.indexOf("+");
-				
+
 				String dateStr = null;
-				
+
 				if (idxEnd < 0)
 				{
 					idxEnd = value.indexOf(")");
 				}
-				
+
 				dateStr = value.substring(idxStart, idxEnd);
 				long dateMs = Long.parseLong(dateStr);
 				retval = new Date(dateMs);
-			}
-			catch (Exception ex)
+			} catch (Exception ex)
 			{
 				retval = null;
 			}
@@ -192,7 +193,7 @@ public final class ConvertUtils
 
 		if (retval == null)
 		{
-            Log.w("ConvertUtils.toDate", "Could not parse DateTime string - " + value);
+			Log.w("ConvertUtils.toDate", "Could not parse DateTime string - " + value);
 		}
 
 		return retval;
@@ -213,10 +214,9 @@ public final class ConvertUtils
 		try
 		{
 			return new URL(value);
-		}
-		catch (MalformedURLException ex)
+		} catch (MalformedURLException ex)
 		{
-            Log.e("ConvertUtils.toUrl", value, ex);
+			Log.e("ConvertUtils.toUrl", value, ex);
 			return null;
 		}
 	}
@@ -354,9 +354,9 @@ public final class ConvertUtils
 		{
 			SimpleDateFormat sdf = new SimpleDateFormat("Z");
 			String timezone = sdf.format(value);
-			
+
 			String result = "/Date(" + String.valueOf(value.getTime()) + timezone + ")/";
-			
+
 			return result;
 		}
 		else
@@ -378,6 +378,43 @@ public final class ConvertUtils
 	public static String toString(URL value)
 	{
 		return value.toString();
+	}
+
+	public static String toString(InputStream is) throws Exception
+	{
+		final char[] buffer = new char[1024];
+		final StringBuilder out = new StringBuilder();
+		try
+		{
+			final Reader in = new InputStreamReader(is, "UTF-8");
+			try
+			{
+				for (; ; )
+				{
+					int rsz = in.read(buffer, 0, buffer.length);
+					if (rsz < 0)
+					{
+						break;
+					}
+					out.append(buffer, 0, rsz);
+				}
+			} finally
+			{
+				in.close();
+			}
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			Log.e("ConvertUtils", "toString(InputStream) - UnsupportedEncodingException", ex);
+			throw ex;
+		}
+		catch (IOException ex)
+		{
+			Log.e("ConvertUtils", "toString(InputStream) - IOException", ex);
+			throw ex;
+		}
+
+		return out.toString();
 	}
 
 	public static Object fromString(@SuppressWarnings("rawtypes") Class type, String value)
@@ -433,4 +470,6 @@ public final class ConvertUtils
 
 		return null;
 	}
+
+
 }

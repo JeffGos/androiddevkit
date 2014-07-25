@@ -1,9 +1,4 @@
 package com.jaigo.androiddevkit.httpserver;
-// InputStreamAdapter
-//
-// Created by jeff.gosling on 15/04/13
-// Copyright (c) 2012 DDN Ltd. All rights reserved.
-//
 
 import java.io.File;
 import java.io.FileInputStream;
