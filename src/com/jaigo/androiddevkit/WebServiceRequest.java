@@ -1,6 +1,5 @@
 package com.jaigo.androiddevkit;
 
-import com.geronimo.globalradio.geronimo.servicemodel.ServiceErrorCodes;
 import com.google.gson.stream.JsonReader;
 import com.jaigo.androiddevkit.utils.Log;
 import org.apache.http.HttpEntity;
@@ -72,10 +71,10 @@ public class WebServiceRequest<T> extends HttpRequest
 
 		try
 		{
-			Method createError = responseClass.getMethod("createError", String.class, String.class, String.class);
+			Method createError = responseClass.getMethod("createErrorResponse", String.class, String.class, String.class);
 
 			@SuppressWarnings("unchecked")
-			T responseDTO = (T) createError.invoke(null, ServiceErrorCodes.UnknownError.toString(), error.getMessage(), Log.getStackTraceString(error));
+			T responseDTO = (T) createError.invoke(null, "UnknownError", error.getMessage(), Log.getStackTraceString(error));
 
 			if (requestHandler != null)
 			{

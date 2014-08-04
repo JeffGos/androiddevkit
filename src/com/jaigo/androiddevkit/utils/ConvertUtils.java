@@ -139,7 +139,8 @@ public final class ConvertUtils
 			{
 				return UUID.fromString(value);
 			}
-		} catch (Exception e)
+		}
+        catch (Exception e)
 		{
 			Log.e("ConvertUtils.toUUID", "Error converting string to UUID - " + value, e);
 		}
@@ -148,16 +149,23 @@ public final class ConvertUtils
 	}
 
 	public static Date toDate(String value)
-	{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    {
+        return toDate(value, "yyyy-MM-dd'T'HH:mm:ss", "UTC");
+    }
+
+    public static Date toDate(String value, String format, String timeZone)
+    {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+		dateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
 
 		Date retval;
 
 		try
 		{
 			retval = dateFormat.parse(value);
-		} catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			retval = null;
 		}
@@ -185,7 +193,8 @@ public final class ConvertUtils
 				dateStr = value.substring(idxStart, idxEnd);
 				long dateMs = Long.parseLong(dateStr);
 				retval = new Date(dateMs);
-			} catch (Exception ex)
+			}
+            catch (Exception ex)
 			{
 				retval = null;
 			}

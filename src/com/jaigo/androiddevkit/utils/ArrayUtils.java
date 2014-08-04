@@ -1,6 +1,5 @@
 package com.jaigo.androiddevkit.utils;
 
-
 public class ArrayUtils
 {
 	public static void set4fArray(float[] destination, float[] source)
