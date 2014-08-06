@@ -42,7 +42,7 @@ public class WebServiceRequest<T> extends HttpRequest
 				Method deserialize = responseClass.getMethod("deserialize", InputStream.class);
 
 				@SuppressWarnings("unchecked")
-				T responseDTO = (T) deserialize.invoke(null, is);
+				T responseDTO = (T) deserialize.invoke(result, is);
 
 				if (requestHandler != null)
 				{
@@ -71,10 +71,10 @@ public class WebServiceRequest<T> extends HttpRequest
 
 		try
 		{
-			Method createError = responseClass.getMethod("createErrorResponse", String.class, String.class, String.class);
+			Method createErrorResponse = responseClass.getMethod("createErrorResponse", String.class, String.class, String.class);
 
 			@SuppressWarnings("unchecked")
-			T responseDTO = (T) createError.invoke(null, "UnknownError", error.getMessage(), Log.getStackTraceString(error));
+			T responseDTO = (T) createErrorResponse.invoke(null, "UnknownError", error.getMessage(), Log.getStackTraceString(error));
 
 			if (requestHandler != null)
 			{
@@ -83,7 +83,7 @@ public class WebServiceRequest<T> extends HttpRequest
 		}
 		catch (Exception e)
 		{
-			onError(e);
+            Log.e(LOG_TAG, "onError: " + requestUrl, e);
 		}
 	}
 }
